@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block t %}Your profile{% endblock %}
+{% block body %}
+<main class="page-wrap">
+    <div class="page-head">
+        <div>
+            <h1>Account settings</h1>
+            <p class="muted">Signed in as {{ account.email }}</p>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for c, m in messages %}<div class="flash {{ c }}" role="alert">{{ m }}</div>{% endfor %}
+    {% endwith %}
+
+    <div class="settings-grid">
+        <section class="panel settings-card">
+            <h2>Personal details</h2>
+            <p class="muted">Used in every assessment, so you only enter them once.</p>
+            <form method="POST" action="{{ url_for('profile') }}" class="settings-form">
+                <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                <label for="full_name">Full name</label>
+                <input id="full_name" name="full_name" required minlength="2" value="{{ account.full_name }}" autocomplete="name">
+                <div class="row2">
+                    <div>
+                        <label for="age">Age</label>
+                        <input id="age" name="age" type="number" min="10" max="100" required value="{{ account.age or '' }}">
+                    </div>
+                    <div>
+                        <label for="gender">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select</option>
+                            {% for g in ["Male", "Female"] %}<option {{ 'selected' if account.gender == g }}>{{ g }}</option>{% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-dark" type="submit">Save details</button>
+            </form>
+        </section>
+
+        <section class="panel settings-card" id="password">
+            <h2>Change password</h2>
+            <p class="muted">Use at least 8 characters.</p>
+            <form method="POST" action="{{ url_for('change_password') }}" class="settings-form">
+                <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                <input type="email" name="username" autocomplete="username" value="{{ account.email }}" hidden readonly tabindex="-1">
+                <label for="current_password">Current password</label>
+                <input id="current_password" name="current_password" type="password" required autocomplete="current-password">
+                <label for="new_password">New password</label>
+                <input id="new_password" name="new_password" type="password" required minlength="8" autocomplete="new-password">
+                <label for="confirm_password">Confirm new password</label>
+                <input id="confirm_password" name="confirm_password" type="password" required minlength="8" autocomplete="new-password">
+                <button class="btn btn-dark" type="submit">Update password</button>
+            </form>
+        </section>
+
+        <section class="panel settings-card wide" id="recovery">
+            <div class="recovery-head">
+                <div>
+                    <h2>Password recovery</h2>
+                    {% if account.security_question %}
+                    <p class="muted">If you forget your password, you can reset it by answering: <b>{{ account.security_question }}</b></p>
+                    {% else %}
+                    <p class="rm-warn">You have not set a recovery question yet. Set one now so you can reset your password if you forget it.</p>
+                    {% endif %}
+                </div>
+                {% if account.security_question %}
+                <button type="button" class="btn btn-ghost-dark" id="toggle-recovery" aria-expanded="false" aria-controls="recovery-form">Change question</button>
+                {% endif %}
+            </div>
+
+            <form method="POST" action="{{ url_for('update_security_question') }}" class="settings-form recovery-grid" id="recovery-form" autocomplete="off" {{ 'hidden' if account.security_question }}>
+                <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                {# Tells the browser which account this is, so it does not autofill the answer box with the email #}
+                <input type="email" name="username" autocomplete="username" value="{{ account.email }}" hidden readonly tabindex="-1">
+                <div>
+                    <label for="sq_password">Current password</label>
+                    <input id="sq_password" name="current_password" type="password" required autocomplete="current-password">
+                </div>
+                <div>
+                    <label for="security_question">Security question</label>
+                    <select id="security_question" name="security_question" required>
+                        <option value="">Choose a question</option>
+                        {% for q in questions %}<option {{ 'selected' if account.security_question == q }}>{{ q }}</option>{% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="security_answer">Answer</label>
+                    <input id="security_answer" name="security_answer" type="text" required minlength="2" autocomplete="off" spellcheck="false" placeholder="Not case-sensitive">
+                </div>
+                <div class="recovery-submit">
+                    <button class="btn btn-dark btn-3d" type="submit">Save</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</main>
+<script>
+(function () {
+    var button = document.getElementById("toggle-recovery");
+    var form = document.getElementById("recovery-form");
+    if (!button || !form) return;
+    button.addEventListener("click", function () {
+        var opening = form.hidden;
+        form.hidden = !opening;
+        button.textContent = opening ? "Cancel" : "Change question";
+        button.setAttribute("aria-expanded", String(opening));
+        if (opening) {
+            form.reset();
+            document.getElementById("sq_password").focus();
+        }
+    });
+    // Reopen the form if the page came back with an error for it
+    if (location.hash === "#recovery" && document.querySelector(".flash.error")) button.click();
+})();
+</script>
+{% endblock %}

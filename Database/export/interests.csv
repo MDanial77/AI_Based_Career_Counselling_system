@@ -1,0 +1,13 @@
+﻿id,interest_name,linked_careers
+1,Programming,Software Engineer; AI Engineer; Data Scientist; Web Developer; AI Research Scientist; Machine Learning Engineer; Mobile App Developer; Game Developer; Full Stack Developer; Software QA Engineer; Data Engineer
+2,Mathematics,Software Engineer; AI Engineer; Data Scientist; Accountant; Civil Engineer; Mechanical Engineer; Data Analyst; Economist; Physicist; Statistician; Actuary; Data Engineer; Aerospace Engineer; Architect; Chartered Accountant; Business Consultant; Industrial Engineer
+3,Biology,Doctor; Dentist; Pharmacist; Biomedical Engineer; Environmental Engineer; Psychologist; Nurse; Physiotherapist; Medical Lab Technologist; Radiologic Technologist; Nutritionist; Veterinary Doctor; Public Health Specialist; Biotechnologist; Microbiologist; Agriculture Officer; Radiologist
+4,Business,Accountant; Bank Manager; Marketing Manager; Financial Analyst; Human Resources Manager; Actuary; Product Manager; Chartered Accountant; Banking Officer; Business Analyst; Digital Marketing Specialist; Supply Chain Manager; Hotel Manager; Chef; Entrepreneur; Business Consultant; IT Project Manager; Art Director; Industrial Engineer
+5,Arts,Graphic Designer; Animator; UI/UX Designer; Content Writer; Architect; Urban Planner; Digital Marketing Specialist; Fashion Designer; Interior Designer; Video Editor; Chef; Photographer; Art Director; Music Producer
+6,Teaching,Teacher; Lecturer; Nurse; Social Worker
+7,Technology,Cyber Security Analyst; Cloud Engineer; DevOps Engineer; Network Engineer; Database Administrator; Statistician; Full Stack Developer; Software QA Engineer; Data Engineer; Product Manager; Mechatronics Engineer; Textile Engineer; Telecom Engineer; Business Analyst; Commercial Pilot; Video Editor; Entrepreneur; IT Project Manager; Music Producer
+8,Physics,Electrical Engineer; Radiologic Technologist; Physicist; Geologist; Aerospace Engineer; Mechatronics Engineer; Petroleum Engineer; Telecom Engineer; Commercial Pilot; Radiologist
+9,Chemistry,Pharmacist; Chemical Engineer; Medical Lab Technologist; Nutritionist; Biotechnologist; Microbiologist; Chemist; Geologist; Agriculture Officer; Petroleum Engineer; Textile Engineer
+10,Debate,Lawyer; Journalist; Civil Judge
+11,Public Service,CSS Officer; Public Administration Officer; Public Health Specialist; Urban Planner; Hotel Manager; Army Officer; Civil Judge; Social Worker
+12,Public Administration,

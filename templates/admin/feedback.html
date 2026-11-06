@@ -1,0 +1,18 @@
+{% extends "admin/layout.html" %}
+{% block t %}Feedback{% endblock %}
+{% block admin %}
+<div class="page-head"><div><h1>Feedback</h1><p class="muted">{{ items|length }} response{{ 's' if items|length != 1 }}{% if items %} · {{ (helpful * 100 / items|length)|round|int }}% found the recommendations helpful{% endif %}.</p></div></div>
+<section class="panel table-panel">
+    <table class="table">
+        <tr><th>Date</th><th>Student</th><th>Top match</th><th>Helpful</th><th>Comment</th><th></th></tr>
+        {% for f in items %}
+        <tr>
+            <td>{{ f.date }}</td><td>{{ f.full_name }}</td><td>{{ f.top_career or 'Next-step pathway' }}</td>
+            <td>{% if f.helpful %}<span class="chip chip-have">Yes</span>{% else %}<span class="chip chip-missing">No</span>{% endif %}</td>
+            <td>{{ f.comment or '—' }}</td>
+            <td class="right"><a class="text-link" href="{{ url_for('report', assessment_id=f.assessment_id) }}">Report</a></td>
+        </tr>
+        {% else %}<tr><td colspan="6" class="muted">No feedback yet.</td></tr>{% endfor %}
+    </table>
+</section>
+{% endblock %}

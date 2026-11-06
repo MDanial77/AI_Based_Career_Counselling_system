@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% from "_roadmap.html" import roadmap as show_roadmap %}
+{% block t %}{{ career.career_name }}{% endblock %}
+{% block body_class %}report-page{% endblock %}
+{% block body %}
+<main class="rp">
+    <section class="rp-hero">
+        <div class="rp-wrap rp-hero-grid">
+            <div>
+                <span class="eyebrow-dark">Career details</span>
+                <h1>{{ career.career_name }}</h1>
+                <p class="rp-sub">{{ career.description }}</p>
+            </div>
+            <div class="rp-actions no-print">
+                <a class="btn btn-light btn-3d" href="javascript:history.back()">← Back</a>
+                <a class="btn btn-ghost" href="{{ url_for('home') }}#assessment">Take the assessment</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="rp-wrap rp-body">
+        <section class="top-match depth-card cd-grid">
+            <div class="tm-main">
+                <span class="eyebrow">At a glance</span>
+                <div class="tm-facts">
+                    <div><span>Average salary</span><strong>{{ career.average_salary }}</strong></div>
+                    <div><span>Future scope</span><strong>{{ career.future_scope }}</strong></div>
+                    <div><span>Minimum education</span><strong>{{ career.education_required }}</strong></div>
+                    <div><span>Field</span><strong>{{ career.field_required }}</strong></div>
+                    <div><span>Main interest</span><strong>{{ career.interest }}</strong></div>
+                    <div><span>Minimum marks</span><strong>{{ career.minimum_percentage|round|int }}%</strong></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="cd-two">
+            <section class="panel-card">
+                <h3>Required subjects and qualifications</h3>
+                <dl class="facts-list">
+                    <div><dt>Intermediate</dt><dd>{{ requirements.intermediate }}</dd></div>
+                    {% if requirements.test %}<div><dt>Entry test</dt><dd>{{ requirements.test }}</dd></div>{% endif %}
+                    <div><dt>{{ requirements.stage }}</dt><dd>{{ requirements.degree }} ({{ requirements.years }} year{{ 's' if requirements.years != 1 }})</dd></div>
+                    {% if requirements.postgrad %}<div><dt>Postgraduate</dt><dd>{{ requirements.postgrad }}</dd></div>{% endif %}
+                    {% for item in requirements.licence %}<div><dt>Then</dt><dd>{{ item }}</dd></div>{% endfor %}
+                </dl>
+            </section>
+            <section class="panel-card">
+                <h3>Personality type</h3>
+                <p class="muted">Holland code <b>{{ holland|map(attribute='code')|join }}</b>. People who enjoy this career are usually:</p>
+                <ul class="type-list">{% for t in holland %}<li><b>{{ t.name }} ({{ t.code }})</b> {{ t.about }}</li>{% endfor %}</ul>
+            </section>
+        </div>
+
+        <section class="panel-card cd-skills">
+            <h3>Skills you need</h3>
+            <div class="chip-row">{% for s in skills %}<span class="chip chip-have">{{ s }}</span>{% endfor %}</div>
+            <p class="muted">Learn with: {{ career.learning_resources }}</p>
+            <div class="rc-links no-print">
+                <span>Find real jobs</span>
+                {% for label, url in links.jobs %}<a class="link-btn" href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ label }}</a>{% endfor %}
+                <span class="sep">Start learning</span>
+                {% for label, url in links.learn %}<a class="link-btn" href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ label }}</a>{% endfor %}
+            </div>
+        </section>
+
+        <section class="rm-section">
+            <h2>Roadmap from Matric to {{ career.career_name }}</h2>
+            <p class="muted">Take the assessment for a roadmap that starts from your own class and skills.</p>
+            {{ show_roadmap(roadmap) }}
+        </section>
+    </div>
+</main>
+{% endblock %}

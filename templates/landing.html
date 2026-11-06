@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block t %}AI career counselling for Pakistani students{% endblock %}
+{% block body_class %}landing{% endblock %}
+{% block body %}
+<main>
+
+<!-- ================= HERO ================= -->
+<section class="lp-hero">
+    <div class="lp-wrap lp-hero-grid">
+        <div class="lp-hero-copy">
+            <span class="eyebrow-dark">AI career counselling · Matric to MS</span>
+            <h1>Find the career that fits who you are, <em>and where you are now.</em></h1>
+            <p class="lp-lead">AI Career Counselling reads your education, marks, interests, skills and your own words, then recommends careers you are eligible for today, shows the skills you still need, and links you to real jobs in Pakistan.</p>
+            <div class="lp-cta">
+                <a class="btn btn-light btn-3d" href="{{ url_for('signup') }}">Start free assessment</a>
+                <a class="btn btn-ghost" href="#how">See how it works</a>
+            </div>
+            <ul class="lp-checks">
+                <li>Takes about 5 minutes</li>
+                <li>Free, no payment</li>
+                <li>Downloadable PDF report</li>
+            </ul>
+        </div>
+
+        <div class="lp-preview stage-3d" aria-label="Example of a career report">
+            <div class="pv-layer pv-layer-2" aria-hidden="true"><span>Roadmap</span><i></i><i></i><i></i></div>
+            <div class="pv-layer pv-layer-1" aria-hidden="true"><span>Skill gap</span><i></i><i></i></div>
+            <div class="pv-card tilt" data-tilt="10">
+                <div class="pv-top">
+                    <span class="pv-label">Example report</span>
+                    <span class="pv-live"><i></i>Live</span>
+                </div>
+                <p class="pv-profile">BS Computer Science · 82% overall · interest: Programming</p>
+                <div class="pv-row pv-first">
+                    <div><strong>Machine Learning Engineer</strong><span>Excellent fit</span></div>
+                    <b>95%</b>
+                </div>
+                <div class="pv-bar"><i style="width:95%"></i></div>
+                <div class="pv-row"><div><strong>AI Engineer</strong><span>Strong fit</span></div><b>80%</b></div>
+                <div class="pv-bar"><i style="width:80%"></i></div>
+                <div class="pv-row"><div><strong>Data Scientist</strong><span>Good fit</span></div><b>66%</b></div>
+                <div class="pv-bar"><i style="width:66%"></i></div>
+                <div class="pv-skills">
+                    <span class="chip chip-have">Python</span>
+                    <span class="chip chip-have">SQL</span>
+                    <span class="chip chip-missing">TensorFlow</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= STATS (real numbers from the database) ================= -->
+<section class="lp-stats">
+    <div class="lp-wrap lp-stats-grid">
+        <div><strong>{{ career_count }}</strong><span>Careers analysed</span></div>
+        <div><strong>{{ areas|length }}</strong><span>Interest areas</span></div>
+        <div><strong>6</strong><span>Education levels supported</span></div>
+        <div><strong>{{ model_count }}</strong><span>ML models compared</span></div>
+    </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="lp-section" id="features">
+    <div class="lp-wrap">
+        <div class="lp-head">
+            <span class="eyebrow">Features</span>
+            <h2>More than a quiz. A counsellor that explains itself.</h2>
+            <p>Every part of the system is designed around how students in Pakistan actually choose careers.</p>
+        </div>
+        <div class="feature-grid">
+            <article class="feat tilt" data-tilt="6">
+                <span class="feat-icon"><svg viewBox="0 0 24 24"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="M6 10.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.5"/></svg></span>
+                <h3>Education-aware matching</h3>
+                <p>Recommends only careers you can pursue at your level. If none are open yet, you get a clear next-step pathway instead of a false match.</p>
+            </article>
+            <article class="feat tilt" data-tilt="6">
+                <span class="feat-icon"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5Z"/><path d="M8 9h8M8 12h5"/></svg></span>
+                <h3>Understands your own words</h3>
+                <p>Describe what you enjoy. Natural language processing picks out your interests and skills and compares them with every career.</p>
+            </article>
+            <article class="feat tilt" data-tilt="6">
+                <span class="feat-icon"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m7 14 4-4 3 3 5-6"/></svg></span>
+                <h3>Machine learning</h3>
+                <p>Four classifiers are compared with 10-fold cross-validation; the best one adds a data-driven opinion to every recommendation.</p>
+            </article>
+            <article class="feat tilt" data-tilt="6">
+                <span class="feat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+                <h3>Live results as you type</h3>
+                <p>Your top matches update instantly while you fill the form, so you can see how marks, skills and interests change your options.</p>
+            </article>
+            <article class="feat tilt" data-tilt="6">
+                <span class="feat-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"/></svg></span>
+                <h3>Skill-gap analysis</h3>
+                <p>See which required skills you already have and which to learn next, with learning resources for each career.</p>
+            </article>
+            <article class="feat tilt" data-tilt="6">
+                <span class="feat-icon"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></span>
+                <h3>Real jobs in Pakistan</h3>
+                <p>Every recommended career links to current openings on Rozee.pk, LinkedIn and Indeed Pakistan, plus courses to get started.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="lp-section lp-alt" id="how">
+    <div class="lp-wrap">
+        <div class="lp-head">
+            <span class="eyebrow">How it works</span>
+            <h2>From your profile to a clear plan in four steps</h2>
+        </div>
+        <ol class="steps">
+            <li><span>1</span><h3>Create your account</h3><p>Sign up once with your name, age and gender. Your past assessments are saved.</p></li>
+            <li><span>2</span><h3>Tell us about yourself</h3><p>Education level, Matric and FSc / A Level marks, degree score, interest, skills and a few sentences about what you enjoy.</p></li>
+            <li><span>3</span><h3>Hybrid AI analysis</h3><p>Knowledge-based scoring, NLP and a trained ML model rank every career and explain each recommendation.</p></li>
+            <li><span>4</span><h3>Follow your roadmap</h3><p>A step-by-step path from your current class to your first job, with skill gaps, live job listings, courses and a PDF report.</p></li>
+        </ol>
+    </div>
+</section>
+
+<!-- ================= EDUCATION LEVELS ================= -->
+<section class="lp-section">
+    <div class="lp-wrap lp-split">
+        <div>
+            <span class="eyebrow">Built for Pakistan</span>
+            <h2>Speaks the language of our education system</h2>
+            <p class="lp-body">Fields of study follow your level: science or arts groups at school, Pre-Medical, Pre-Engineering, ICS, I.Com or FA at college, and university programmes at BS and MS. Your Matric, Intermediate and degree results are combined, with your current level counting most.</p>
+            <a class="text-link" href="{{ url_for('signup') }}">Start your assessment →</a>
+        </div>
+        <div class="level-list">
+            <div class="level"><b>Matric / O Level</b><span>Explore pathways and choose your FSc / A Level group</span></div>
+            <div class="level"><b>Intermediate / A Level</b><span>Pick the right degree and see careers open after FSc</span></div>
+            <div class="level"><b>BS / Bachelor</b><span>Careers you can enter now, and the skills employers want</span></div>
+            <div class="level"><b>MS / Master</b><span>Research, teaching and senior specialist roles</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= CAREER AREAS (from the database) ================= -->
+<section class="lp-section lp-alt" id="careers">
+    <div class="lp-wrap">
+        <div class="lp-head">
+            <span class="eyebrow">Career areas</span>
+            <h2>{{ career_count }} careers across {{ areas|length }} interest areas</h2>
+        </div>
+        <div class="area-grid">
+            {% for a in areas %}
+            <div class="area">
+                <div class="area-top"><h3>{{ a.interest }}</h3><span>{{ a.n }} career{{ 's' if a.n != 1 }}</span></div>
+                <p class="area-names">{% for c in a.careers %}<a href="{{ url_for('career_details', career_id=c.id) }}">{{ c.name }}</a>{{ ", " if not loop.last }}{% endfor %}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="lp-section" id="faq">
+    <div class="lp-wrap lp-narrow">
+        <div class="lp-head">
+            <span class="eyebrow">FAQ</span>
+            <h2>Common questions</h2>
+        </div>
+        <details><summary>Is AI Career Counselling free?</summary><p>Yes. Create an account and take as many assessments as you like.</p></details>
+        <details><summary>I am a Matric student. Is this useful for me?</summary><p>Yes. Most careers need a degree, so instead of recommending jobs you cannot apply for yet, the system shows which careers match your interests and the qualification each one needs, so you can choose the right FSc or A Level group.</p></details>
+        <details><summary>How does the AI decide?</summary><p>Three techniques work together: knowledge-based scoring against each career's requirements, natural language processing of your description, and a machine learning model selected from four by 10-fold cross-validation. Every recommendation lists the reasons behind it. <a class="text-link" href="{{ url_for('model_info') }}">Read more</a>.</p></details>
+        <details><summary>Are the job listings real?</summary><p>Yes. The job buttons open live searches on Rozee.pk, LinkedIn and Indeed Pakistan for that career, so you always see current openings.</p></details>
+        <details id="privacy"><summary>What happens to my data?</summary><p>Your profile and assessments are stored in this system's own database only to show your history and improve recommendations. Passwords are stored as secure hashes. Nothing is shared with third parties.</p></details>
+        <details><summary>Should I rely only on these results?</summary><p>No. Use the report as a starting point, and discuss important decisions with your teachers, parents or a career counsellor.</p></details>
+    </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="lp-cta-band">
+    <div class="lp-wrap lp-cta-inner">
+        <div>
+            <h2>Ready to see where you fit?</h2>
+            <p>Create a free account and get your personal career report in minutes.</p>
+        </div>
+        <a class="btn btn-light" href="{{ url_for('signup') }}">Create free account</a>
+    </div>
+</section>
+
+</main>
+{% endblock %}

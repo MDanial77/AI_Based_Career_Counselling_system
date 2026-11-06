@@ -1,0 +1,42 @@
+{
+  "dataset_size": 5280,
+  "classes": 88,
+  "features": 175,
+  "folds": 10,
+  "dataset_type": "Synthetic profiles generated from the career database",
+  "selected_model": "Random Forest",
+  "results": [
+    {
+      "model": "Random Forest",
+      "accuracy": 92.7,
+      "accuracy_std": 0.8,
+      "precision": 0.936,
+      "recall": 0.927,
+      "f1": 0.926
+    },
+    {
+      "model": "Support Vector Machine",
+      "accuracy": 92.4,
+      "accuracy_std": 1.2,
+      "precision": 0.934,
+      "recall": 0.924,
+      "f1": 0.923
+    },
+    {
+      "model": "K-Nearest Neighbours",
+      "accuracy": 87.1,
+      "accuracy_std": 1.2,
+      "precision": 0.889,
+      "recall": 0.871,
+      "f1": 0.868
+    },
+    {
+      "model": "Decision Tree",
+      "accuracy": 78.5,
+      "accuracy_std": 1.8,
+      "precision": 0.81,
+      "recall": 0.785,
+      "f1": 0.784
+    }
+  ]
+}

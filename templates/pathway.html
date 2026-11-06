@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% from "_roadmap.html" import roadmap %}
+{% block t %}Your career roadmap{% endblock %}
+{% block body_class %}report-page{% endblock %}
+{% block body %}
+<main class="rp">
+    <section class="rp-hero">
+        <div class="rp-wrap rp-hero-grid">
+            <div>
+                <span class="eyebrow-dark">Career roadmap{{ ' · ' ~ generated_on if generated_on }}</span>
+                <h1>Your roadmap from {{ education }} to your future career</h1>
+                <p class="rp-sub">{{ education }} · {{ field }} · interest in {{ interest }}</p>
+                <p class="rp-scoreline">These careers match your interests but need a higher qualification first. Follow the steps below to get there.</p>
+            </div>
+            <div class="rp-actions no-print">
+                <button type="button" class="btn btn-light btn-3d" onclick="window.print()">Download PDF</button>
+                <a class="btn btn-ghost" href="{{ url_for('home') }}#assessment">New assessment</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="rp-wrap rp-body">
+        {% if future %}
+        {% set first = future[0] %}
+        <section class="top-match path-top depth-card">
+            <div class="tm-main">
+                <span class="eyebrow">Best future match</span>
+                <h2>{{ first.career_name }}</h2>
+                <p>{{ first.description }}</p>
+                {% if first.personality_match is defined and first.personality_match is not none %}<span class="pm-tag">Personality match {{ first.personality_match|round|int }}%</span>{% endif %}
+                {% if first.career_id %}<p class="no-print"><a class="text-link" href="{{ url_for('career_details', career_id=first.career_id) }}">View career details →</a></p>{% endif %}
+                <div class="tm-facts">
+                    <div><span>Needs</span><strong>{{ first.required_education }}</strong></div>
+                    <div><span>Average salary</span><strong>{{ first.average_salary }}</strong></div>
+                    <div><span>Future scope</span><strong>{{ first.future_scope }}</strong></div>
+                </div>
+            </div>
+            <div class="tm-score">
+                <div class="ring" style="--p: {{ first.score|round|int }}"><span><b>{{ first.score|round|int }}%</b>interest match</span></div>
+            </div>
+        </section>
+
+        {% if personality_profile %}
+        <section class="rm-section personality-card">
+            <div>
+                <h2>Your personality type: {{ personality_profile[:2]|map(attribute='name')|join(' and ') }}</h2>
+                <p class="muted">From your answers to the 15-question Holland (RIASEC) quiz.</p>
+                <ul class="type-list">{% for t in personality_profile[:2] %}<li><b>{{ t.name }} ({{ t.code }})</b> {{ t.about }}</li>{% endfor %}</ul>
+            </div>
+            <div class="riasec-bars">
+                {% for letter in ['R','I','A','S','E','C'] %}{% for t in personality_profile if t.code == letter %}
+                <div class="riasec-row"><span>{{ t.name }}</span><div class="rc-bar small"><i style="width: {{ t.score }}%"></i></div><b>{{ t.score }}</b></div>
+                {% endfor %}{% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <section class="rm-section">
+            <h2>Your roadmap to {{ first.career_name }}</h2>
+            {{ roadmap(first.roadmap) }}
+        </section>
+
+        {% if future|length > 1 %}
+        <div class="rp-section-head">
+            <h2>Other careers you can work towards</h2>
+            <p>Open a roadmap to compare routes before you choose your Intermediate group or degree.</p>
+        </div>
+        {% for c in future[1:] %}
+        <details class="rc rc-path">
+            <summary>
+                <span class="rc-rank">{{ loop.index + 1 }}</span>
+                <span class="rc-title"><strong>{{ c.career_name }}</strong><small>Needs {{ c.required_education }} · {{ c.roadmap.summary if c.roadmap }}</small></span>
+                <span class="rc-score"><b>{{ c.score|round|int }}%</b></span>
+            </summary>
+            <p class="muted">{{ c.description }}{% if c.career_id %} <a class="text-link no-print" href="{{ url_for('career_details', career_id=c.career_id) }}">View details</a>{% endif %}</p>
+            {{ roadmap(c.roadmap) }}
+        </details>
+        {% endfor %}
+        {% endif %}
+        {% endif %}
+
+        <p class="rp-disclaimer">This roadmap is guidance generated from the information you entered. Discuss your choice of Intermediate group or degree with your teachers, parents or a career counsellor.</p>
+    </div>
+</main>
+<script>
+window.addEventListener("beforeprint", function () {
+    document.querySelectorAll("details").forEach(function (d) { d.open = true; });
+});
+</script>
+{% endblock %}

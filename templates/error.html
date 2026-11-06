@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block t %}Please check your input{% endblock %}
+{% block body %}
+<main class="page-wrap"><div class="panel"><span class="tag">Please check your input</span>
+<h2>We couldn't process that</h2><p>{{ message }}</p>
+<p><a class="nav-button" href="javascript:history.back()">← Go back and fix it</a></p></div></main>
+{% endblock %}

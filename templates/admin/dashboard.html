@@ -1,0 +1,54 @@
+{% extends "admin/layout.html" %}
+{% block t %}Admin dashboard{% endblock %}
+{% block admin %}
+<div class="page-head"><div><h1>Dashboard</h1><p class="muted">Overview of students, assessments and the AI model.</p></div></div>
+
+<div class="kpi-grid">
+    <div class="kpi tilt" data-tilt="6"><span>Students</span><strong>{{ stats.students }}</strong></div>
+    <div class="kpi tilt" data-tilt="6"><span>Assessments</span><strong>{{ stats.assessments }}</strong><small>{{ stats.this_week }} in the last 7 days</small></div>
+    <div class="kpi tilt" data-tilt="6"><span>Careers in database</span><strong>{{ stats.careers }}</strong></div>
+    <div class="kpi tilt" data-tilt="6"><span>Found helpful</span><strong>{{ (stats.satisfaction ~ '%') if stats.satisfaction is not none else '—' }}</strong><small>{{ stats.feedback }} feedback response{{ 's' if stats.feedback != 1 }}</small></div>
+</div>
+
+<div class="admin-grid">
+    <section class="panel">
+        <h2>Most recommended careers</h2>
+        {% for r in top_careers %}
+        <div class="hbar"><div class="hbar-top"><span>{{ r.name }}</span><b>{{ r.n }}</b></div><div class="hbar-track"><i style="width: {{ (r.n * 100 / max_top)|round|int }}%"></i></div></div>
+        {% else %}<p class="muted">No career matches yet. Matric and O Level students receive roadmaps instead, shown under education level.</p>{% endfor %}
+    </section>
+    <section class="panel">
+        <h2>Assessments by education level</h2>
+        {% for name, n in levels %}
+        <div class="hbar"><div class="hbar-top"><span>{{ name }}</span><b>{{ n }}</b></div><div class="hbar-track"><i style="width: {{ (n * 100 / max_level)|round|int }}%"></i></div></div>
+        {% else %}<p class="muted">No assessments yet.</p>{% endfor %}
+    </section>
+</div>
+
+<section class="panel">
+    <div class="panel-head">
+        <div>
+            <h2>AI model</h2>
+            {% if metrics %}
+            <p class="muted">In use: <b>{{ metrics.selected_model }}</b> · accuracy {{ metrics.results[0].accuracy }}% · F1 {{ "%.3f"|format(metrics.results[0].f1) }} · {{ "{:,}".format(metrics.dataset_size) }} training profiles, {{ metrics.classes }} careers</p>
+            {% else %}<p class="muted">Not evaluated yet.</p>{% endif %}
+        </div>
+        <form method="POST" action="{{ url_for('admin_retrain') }}" onsubmit="this.querySelector('button').disabled=true;this.querySelector('button').textContent='Retraining… (about 15 seconds)'">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <button class="btn btn-dark" type="submit">Retrain AI model</button>
+        </form>
+    </div>
+    <p class="muted small">Retrain after adding, editing or deleting careers. This rebuilds the training data from the career database and compares all four models again.</p>
+</section>
+
+<section class="panel">
+    <h2>Recent assessments</h2>
+    <table class="table">
+        <tr><th>Student</th><th>Date</th><th>Education</th><th>Top match</th><th></th></tr>
+        {% for r in recent %}
+        <tr><td>{{ r.name }}</td><td>{{ r.date }}</td><td>{{ r.education }}</td><td><strong>{{ r.top_career }}</strong></td>
+            <td class="right">{% if r.has_report %}<a class="text-link" href="{{ url_for('report', assessment_id=r.id) }}">View</a>{% endif %}</td></tr>
+        {% else %}<tr><td colspan="5" class="muted">No assessments yet.</td></tr>{% endfor %}
+    </table>
+</section>
+{% endblock %}

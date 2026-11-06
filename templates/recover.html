@@ -1,0 +1,65 @@
+{% extends "auth_base.html" %}
+{% block t %}Reset your password{% endblock %}
+
+{% block aside %}
+    <span class="eyebrow-dark">Account recovery</span>
+    <h2>Forgot your password? No problem.</h2>
+    <p>Reset it in two quick steps: enter your email, then answer the security question you chose when you signed up.</p>
+    <ol class="recover-steps">
+        <li class="{{ 'on' if step == 'email' else 'done' }}"><span>1</span>Enter your email</li>
+        <li class="{{ 'on' if step in ('question', 'link') }}"><span>2</span>Verify and choose a new password</li>
+    </ol>
+    <p class="aside-note">Can't remember your answer? Ask the administrator for a one-time reset link.</p>
+{% endblock %}
+
+{% block form %}
+    {% if step == "email" %}
+        <h1>Reset your password</h1>
+        <p class="sub">Enter the email address you signed up with.</p>
+        <form method="POST">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" required autofocus placeholder="you@example.com" value="{{ form.get('email', '') }}" autocomplete="email">
+            <button class="auth-btn btn-3d" type="submit">Continue</button>
+        </form>
+        <p class="auth-fine">Remembered it? <a href="{{ url_for('login') }}">Back to sign in</a></p>
+
+    {% elif step == "question" %}
+        <h1>Answer your security question</h1>
+        <p class="sub">Resetting the password for <b>{{ email }}</b>. <a href="{{ url_for('forgot_password') }}">Not you?</a></p>
+        <form method="POST">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <div class="question-box">{{ question }}</div>
+            <label for="answer">Your answer</label>
+            <input id="answer" name="answer" required autofocus autocomplete="off" placeholder="Not case-sensitive">
+            <label for="new_password">New password</label>
+            <div class="pw-field">
+                <input id="new_password" name="new_password" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters">
+                <button type="button" class="pw-toggle" data-target="new_password" aria-label="Show password">Show</button>
+            </div>
+            <label for="confirm_password">Confirm new password</label>
+            <input id="confirm_password" name="confirm_password" type="password" required minlength="8" autocomplete="new-password">
+            <button class="auth-btn btn-3d" type="submit">Reset password</button>
+        </form>
+
+    {% elif step == "link" %}
+        <h1>Choose a new password</h1>
+        <p class="sub">For <b>{{ email }}</b>. This link works once.</p>
+        <form method="POST">
+            <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+            <label for="new_password">New password</label>
+            <div class="pw-field">
+                <input id="new_password" name="new_password" type="password" required minlength="8" autofocus autocomplete="new-password" placeholder="At least 8 characters">
+                <button type="button" class="pw-toggle" data-target="new_password" aria-label="Show password">Show</button>
+            </div>
+            <label for="confirm_password">Confirm new password</label>
+            <input id="confirm_password" name="confirm_password" type="password" required minlength="8" autocomplete="new-password">
+            <button class="auth-btn btn-3d" type="submit">Save new password</button>
+        </form>
+
+    {% else %}
+        <h1>This link has expired</h1>
+        <p class="sub">Reset links work once and expire after one hour. Ask the administrator for a new link, or reset your password with your security question.</p>
+        <a class="auth-btn btn-3d as-link" href="{{ url_for('forgot_password') }}">Reset with security question</a>
+    {% endif %}
+{% endblock %}

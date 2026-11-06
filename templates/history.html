@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block t %}Your reports{% endblock %}
+{% block body %}
+<main class="page-wrap">
+    <div class="page-head">
+        <div>
+            <h1>Your career reports</h1>
+            <p class="muted">Every assessment you take is saved here. Open any report to see it again or download it as a PDF.</p>
+        </div>
+        <a class="btn btn-dark" href="{{ url_for('home') }}#assessment">New assessment</a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for c, m in messages %}<div class="flash {{ c }}">{{ m }}</div>{% endfor %}
+    {% endwith %}
+
+    {% if items %}
+    <div class="report-list">
+        {% for i in items %}
+        {% if i.has_report %}<a class="report-item" href="{{ url_for('report', assessment_id=i.id) }}">{% else %}<div class="report-item disabled">{% endif %}
+            <div class="ri-main">
+                <strong>{{ i.top_career }}</strong>
+                <span>{{ i.education }} · {{ i.field }} · interest in {{ i.interest }}</span>
+            </div>
+            <span class="ri-date">{{ i.date }}</span>
+            <span class="ri-action">{{ "View report →" if i.has_report else "Not saved" }}</span>
+        {% if i.has_report %}</a>{% else %}</div>{% endif %}
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="panel empty-state">
+        <h2>No reports yet</h2>
+        <p class="muted">Take your first assessment to get a personal career report.</p>
+        <a class="btn btn-dark" href="{{ url_for('home') }}#assessment">Start assessment</a>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

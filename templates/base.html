@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block t %}{% endblock %} | AI Career Counselling</title>
+    <meta name="description" content="AI Career Counselling is an AI-based career counselling system for Pakistani students from Matric to MS.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pages.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<header class="navbar no-print">
+    <div class="nav-container">
+        <a href="{{ url_for('home') }}" class="brand">
+            <span class="brand-mark">AI</span>
+            <span class="brand-text">AI Career Counselling</span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+            {% if account_name %}
+                <a class="plain hide-sm" href="{{ url_for('home') }}#assessment">Assessment</a>
+                <a class="plain hide-sm" href="{{ url_for('history') }}">My reports</a>
+                {% if is_admin %}
+                <a class="admin-pill" href="{{ url_for('admin_dashboard') }}">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+                    Admin panel
+                </a>
+                {% endif %}
+                <details class="user-menu">
+                    <summary aria-label="Account menu">
+                        <span class="avatar">{{ (account_name.split()|map('first')|join|upper)[:2] }}</span>
+                        <span class="hide-sm">{{ account_name.split()[0] }}</span>
+                        <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                    </summary>
+                    <div class="menu">
+                        <div class="menu-head">
+                            <strong>{{ account_name }}</strong>
+                            <span>{{ "Administrator" if is_admin else "Student" }}</span>
+                        </div>
+                        <a href="{{ url_for('home') }}#assessment">New assessment</a>
+                        <a href="{{ url_for('history') }}">My reports</a>
+                        <a href="{{ url_for('profile') }}">Account settings</a>
+                        <a href="{{ url_for('model_info') }}">How the AI works</a>
+                        {% if is_admin %}<a class="menu-admin" href="{{ url_for('admin_dashboard') }}">Admin panel</a>{% endif %}
+                        <a class="menu-signout" href="{{ url_for('logout') }}">Sign out</a>
+                    </div>
+                </details>
+            {% else %}
+                <a class="plain hide-sm" href="{{ url_for('landing') }}#features">Features</a>
+                <a class="plain hide-sm" href="{{ url_for('landing') }}#how">How it works</a>
+                <a class="plain hide-sm" href="{{ url_for('landing') }}#faq">FAQ</a>
+                <a class="plain" href="{{ url_for('login') }}">Sign in</a>
+                <a class="nav-button btn-3d" href="{{ url_for('signup') }}">Get started</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+{% block body %}{% endblock %}
+<footer class="site-footer no-print">
+    <div class="site-footer-inner">
+        <div class="footer-brand">
+            <a href="{{ url_for('home') }}" class="brand">
+                <span class="brand-mark">AI</span>
+                <span class="brand-text">AI Career Counselling</span>
+            </a>
+            <p>AI-based career counselling for students in Pakistan, from Matric and O Level to BS and MS.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Product</h4>
+            <a href="{{ url_for('landing') }}#features">Features</a>
+            <a href="{{ url_for('landing') }}#how">How it works</a>
+            <a href="{{ url_for('landing') }}#careers">Career areas</a>
+            <a href="{{ url_for('signup') }}">Create account</a>
+        </div>
+        <div class="footer-col">
+            <h4>About</h4>
+            <a href="{{ url_for('model_info') }}">How the AI works</a>
+            <a href="{{ url_for('landing') }}#faq">FAQ</a>
+            <a href="{{ url_for('landing') }}#privacy">Privacy</a>
+            <a href="{{ url_for('admin_login') }}">Administrator sign-in</a>
+        </div>
+        <div class="footer-col">
+            <h4>Project</h4>
+            <span>Final Year Project</span>
+            <span>Flask · SQLite · scikit-learn</span>
+        </div>
+    </div>
+    <div class="site-footer-bottom">
+        <span>© 2026 AI Career Counselling. All rights reserved.</span>
+        <span>Recommendations are guidance, not a guarantee. Discuss major decisions with a teacher or counsellor.</span>
+    </div>
+</footer>
+<script>
+document.addEventListener("click", function (event) {
+    document.querySelectorAll("details.user-menu[open]").forEach(function (menu) {
+        if (!menu.contains(event.target)) menu.removeAttribute("open");
+    });
+});
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") document.querySelectorAll("details.user-menu[open]").forEach(m => m.removeAttribute("open"));
+});
+</script>
+<script src="{{ url_for('static', filename='js/depth.js') }}" defer></script>
+</body>
+</html>

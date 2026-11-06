@@ -1,0 +1,31 @@
+{% extends "admin/layout.html" %}
+{% block t %}Manage careers{% endblock %}
+{% block admin %}
+<div class="page-head">
+    <div><h1>Careers</h1><p class="muted">{{ careers|length }} career{{ 's' if careers|length != 1 }}{{ ' matching “' ~ q ~ '”' if q }}. Changes are used by the recommendation engine immediately.</p></div>
+    <a class="btn btn-dark" href="{{ url_for('admin_career_form') }}">Add career</a>
+</div>
+<form class="admin-search" method="GET">
+    <input name="q" value="{{ q }}" placeholder="Search by career, interest or field">
+    <button class="btn btn-ghost-dark" type="submit">Search</button>
+    {% if q %}<a class="text-link" href="{{ url_for('admin_careers') }}">Clear</a>{% endif %}
+</form>
+<section class="panel table-panel">
+    <table class="table">
+        <tr><th>Career</th><th>Education</th><th>Field</th><th>Interest</th><th>Min %</th><th class="right">Actions</th></tr>
+        {% for c in careers %}
+        <tr>
+            <td><strong>{{ c.career_name }}</strong><div class="muted small">{{ c.required_skills }}</div></td>
+            <td>{{ c.education_required }}</td><td>{{ c.field_required }}</td><td>{{ c.interest }}</td><td>{{ c.minimum_percentage|round|int }}%</td>
+            <td class="right actions">
+                <a class="link-btn" href="{{ url_for('admin_career_form', career_id=c.id) }}">Edit</a>
+                <form method="POST" action="{{ url_for('admin_career_delete', career_id=c.id) }}" onsubmit="return confirm('Delete {{ c.career_name|e }}? This cannot be undone.');">
+                    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                    <button class="link-btn danger" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}<tr><td colspan="6" class="muted">No careers found.</td></tr>{% endfor %}
+    </table>
+</section>
+{% endblock %}

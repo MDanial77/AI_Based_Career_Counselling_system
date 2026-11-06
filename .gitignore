@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Secrets and local data (SRS SEC-09, DB-10)
+instance/
+.env
+*.db-journal
+*.db.bak
+backups/

@@ -1,0 +1,647 @@
+{% extends "base.html" %}
+{% block t %}Career assessment{% endblock %}
+{% block body_class %}home-body{% endblock %}
+{% block body %}
+<main>
+    <section class="rp-hero welcome-hero">
+        <div class="rp-wrap rp-hero-grid">
+            <div>
+                <span class="eyebrow-dark">Career assessment</span>
+                <h1>Welcome back, {{ account.full_name.split(' ')[0] }}</h1>
+                <p class="rp-sub">Fill in your details below. Your best career matches update live as you type.</p>
+            </div>
+            <div class="rp-actions">
+                <a class="btn btn-ghost" href="{{ url_for('history') }}">Past reports</a>
+                <a class="btn btn-ghost" href="{{ url_for('model_info') }}">How the AI works</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="assessment-section" id="assessment">
+
+        <div class="section-shell">
+
+
+
+            <div class="form-card">
+
+                <div class="form-progress" aria-hidden="true">
+
+                    <div class="progress-item active"><span>01</span><b>Education</b></div>
+
+                    <div class="progress-line"></div>
+
+                    <div class="progress-item"><span>02</span><b>Interest</b></div>
+
+                    <div class="progress-line"></div>
+
+                    <div class="progress-item"><span>03</span><b>Skills</b></div><div class="progress-line"></div><div class="progress-item"><span>04</span><b>Personality</b></div>
+
+                </div>
+
+
+
+                <div class="form-header">
+
+                    <span class="form-badge">AI CAREER ASSESSMENT</span>
+
+                    <h2>Career Recommendation Assessment</h2>
+
+                    <p>Enter your information below and our AI engine will analyze your profile to identify suitable career paths.</p>
+
+                </div>
+
+
+
+                <div class="prefill-note" id="prefill-note" hidden>Your answers from your last assessment are filled in. Change anything that is different, then get your new results.</div>
+                <form action="/submit" method="POST" id="career-assessment-form">
+                    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+
+                    <div class="profile-strip"><div><strong>{{ account.full_name }}</strong><span>{{ account.age }} years · {{ account.gender }}</span></div><a href="{{ url_for('profile') }}">Edit profile</a></div>
+
+<div class="section-title">
+
+                        <span class="section-number">01</span>
+
+                        <div><strong>Education & Academic Profile</strong><small>Your academic background</small></div>
+
+                    </div>
+
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="education">Education Level</label>
+
+                            <select id="education" name="education" required>
+
+                                <option value="">Select Education Level</option>
+
+                                <option value="Matric">Matric</option><option value="O Level">O Level</option><option value="Intermediate">Intermediate (FSc / FA / ICS / I.Com)</option><option value="A Level">A Level</option><option value="BS">BS / Bachelor</option><option value="MS">MS / Master</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="field">Field of Study</label>
+
+                            <select id="field" name="field" required disabled><option value="">Select education level first</option></select>
+
+                        </div>
+
+                        <div class="form-group" id="matric-group">
+                            <label for="matric_percentage">Matric / O Level Percentage</label>
+                            <input type="number" id="matric_percentage" name="matric_percentage" placeholder="e.g. 85" step="0.01" min="0" max="100" required>
+                            <small class="field-hint">Your final Matric (or O Level equivalent) percentage.</small>
+                        </div>
+                        <div class="form-group" id="inter-group" hidden>
+                            <label for="inter_percentage">Intermediate / A Level Percentage</label>
+                            <input type="number" id="inter_percentage" name="inter_percentage" placeholder="e.g. 80" step="0.01" min="0" max="100">
+                            <small class="field-hint">Your FSc / FA / ICS / I.Com (or A Level equivalent) percentage.</small>
+                        </div>
+                        <div class="form-group degree-only" hidden>
+
+                            <label for="score_type">Current Degree Score Type</label>
+
+                            <select id="score_type" name="score_type" required>
+
+                                <option value="percentage">Percentage</option>
+
+                                <option value="cgpa">CGPA</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group degree-only" hidden>
+
+                            <label for="marks">Current Degree Score</label>
+
+                            <input type="number" id="marks" name="marks" placeholder="e.g. 85" step="0.01" min="0" max="100" required>
+
+                            <small class="field-hint" id="score-hint">Enter a value from 0 to 100.</small>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="section-title">
+
+                        <span class="section-number">02</span>
+
+                        <div><strong>Career Interest</strong><small>Choose the area you enjoy most</small></div>
+
+                    </div>
+
+
+
+                    <div class="form-group full-width">
+
+                        <label for="interest">What area interests you most?</label>
+
+                        <select id="interest" name="interest" required>
+
+                            <option value="">Select Your Main Interest</option>
+
+                            <option value="Programming">Programming</option>
+
+                            <option value="Mathematics">Mathematics</option>
+
+                            <option value="Biology">Biology</option>
+
+                            <option value="Business">Business</option>
+
+                            <option value="Arts">Arts</option>
+
+                            <option value="Teaching">Teaching</option>
+
+                            <option value="Technology">Technology</option>
+
+                            <option value="Physics">Physics</option>
+
+                            <option value="Chemistry">Chemistry</option>
+
+                            <option value="Debate">Debate</option>
+
+                            <option value="Public Service">Public Service</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="interest_description">Describe what you enjoy or would like to do</label>
+                        <textarea id="interest_description" name="interest_description" rows="4" maxlength="1200"
+                            placeholder="For example: I enjoy solving problems, working with computers, analysing information, and building useful applications."></textarea>
+                        <small class="field-hint">Write a few sentences in your own words. Our NLP engine detects your interests and skills from the text and uses them in your recommendation.</small>
+                    </div>
+
+
+
+                    <div class="section-title">
+
+                        <span class="section-number">03</span>
+
+                        <div><strong>Skills & Strengths</strong><small>Choose up to {{ max_skills }} skills you are genuinely good at</small></div>
+
+                    </div>
+
+
+
+                    <div class="skills-intro">
+
+                        <p>Pick your strongest skills only. Choosing everything makes every career look the same, so the limit keeps your results accurate.</p>
+
+                        <span class="selected-count" id="selected-count">0 / {{ max_skills }} selected</span>
+
+                    </div>
+
+
+
+                    <div class="skills-subsection">
+                        <h3>Suggested skills for your interest</h3>
+                        <p>These suggestions change when you select a different interest.</p>
+                        <div class="skills-grid" id="suggested-skills-grid" aria-live="polite"></div>
+                    </div>
+                    <div class="skills-subsection">
+                        <div class="extra-head">
+                            <div>
+                                <h3>Other skills</h3>
+                                <p>Search for a skill that is not in the suggestions.</p>
+                            </div>
+                            <input type="search" id="skill-search" class="skill-search" placeholder="Search skills, e.g. Excel" autocomplete="off" aria-label="Search skills">
+                        </div>
+                        <div class="skills-grid" id="extra-skills-grid"></div>
+                        <button type="button" class="show-more-skills" id="show-more-skills">Show all skills</button>
+                        <p class="skill-limit-msg" id="skill-limit-msg" role="status" hidden>You have chosen {{ max_skills }} skills, the maximum. Untick one to choose another.</p>
+                    </div>
+
+                    <div class="skill-levels" id="skill-levels" hidden>
+                        <h3>Rate your selected skills</h3>
+                        <p>Be honest: 1 Beginner · 2 Basic · 3 Intermediate · 4 Advanced · 5 Expert. Higher levels count more in your match.</p>
+                        <div id="skill-levels-list"></div>
+                    </div>
+
+                    <div class="section-title">
+                        <span class="section-number">04</span>
+                        <div><strong>Personality quiz</strong><small>15 short statements, about 3 minutes. There are no right or wrong answers.</small></div>
+                    </div>
+                    <div class="quiz">
+                        <div class="quiz-head">
+                            <p>How much do you agree with each statement?</p>
+                            <span class="quiz-count" id="quiz-count">0 / {{ questions|length }} answered</span>
+                        </div>
+                        <div class="quiz-scale" aria-hidden="true"><span></span>{% for label in answer_labels %}<span>{{ label }}</span>{% endfor %}</div>
+                        {% for key, letter, text in questions %}
+                        <fieldset class="quiz-row">
+                            <legend><span class="quiz-num">{{ loop.index }}</span>{{ text }}</legend>
+                            <div class="quiz-options">
+                                {% for value in range(1, 6) %}
+                                <label class="quiz-option" title="{{ answer_labels[value - 1] }}">
+                                    <input type="radio" name="{{ key }}" value="{{ value }}" {{ 'required' if value == 1 }} aria-label="{{ answer_labels[value - 1] }}">
+                                    <span>{{ value }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </fieldset>
+                        {% endfor %}
+                    </div>
+                    <div class="live-preview" id="live-preview" aria-live="polite">
+                        <div class="lp-head"><span class="lp-dot"></span><strong>Live career matches</strong><small id="lp-status">Updates as you fill the form</small></div>
+                        <div id="lp-body"><p class="lp-empty">Fill in your details above and your best matches will appear here instantly.</p></div>
+                    </div>
+
+
+
+
+                    <div class="form-footer-row">
+
+                        <p class="privacy-note"><span aria-hidden="true">🔒</span> Your information is analyzed only to generate personalized career recommendations.</p>
+
+                        <button type="submit" class="recommend-button btn-3d" id="submit-button">
+
+                            <span class="button-icon">✦</span>
+
+                            <span>Get AI Career Recommendation</span>
+
+                            <span class="button-arrow" aria-hidden="true">→</span>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+</main>
+
+
+
+
+<div class="loading-overlay" id="loading-overlay" aria-hidden="true">
+
+    <div class="loading-card">
+
+        <div class="loading-orb">AI</div>
+
+        <h2>Analyzing your profile…</h2>
+
+        <p>Matching your profile with suitable career paths.</p>
+
+        <div class="loading-bar"><span></span></div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("career-assessment-form");
+    const interest = document.getElementById("interest");
+    const suggestedGrid = document.getElementById("suggested-skills-grid");
+    const extraGrid = document.getElementById("extra-skills-grid");
+    const counter = document.getElementById("selected-count");
+    const overlay = document.getElementById("loading-overlay");
+    const submitButton = document.getElementById("submit-button");
+    const scoreType = document.getElementById("score_type");
+    const marks = document.getElementById("marks");
+    const scoreHint = document.getElementById("score-hint");
+
+    const skillsByInterest = {
+        "Programming": ["Python", "Programming", "Problem Solving", "Debugging", "SQL", "Git"],
+        "Mathematics": ["Mathematics", "Statistics", "Analytical Thinking", "Problem Solving", "Research", "Data Analysis"],
+        "Biology": ["Biology", "Patient Care", "Laboratory Skills", "Research", "Nursing", "Animal Care"],
+        "Business": ["Communication", "Leadership", "Accounting", "Business Analysis", "Excel", "Marketing"],
+        "Arts": ["Creativity", "Graphic Design", "Design", "Video Editing", "Fashion Design", "Content Writing"],
+        "Teaching": ["Teaching", "Communication", "Public Speaking", "Lesson Planning", "Research"],
+        "Technology": ["Problem Solving", "Computer Literacy", "Networking", "Linux", "Cybersecurity", "Python"],
+        "Physics": ["Physics", "Mathematics", "Problem Solving", "Research", "Programming"],
+        "Chemistry": ["Chemistry", "Laboratory Skills", "Research", "Analytical Thinking", "Safety"],
+        "Debate": ["Communication", "Critical Thinking", "Public Speaking", "Research", "Leadership"],
+        "Public Service": ["Leadership", "Administration", "Communication", "Physical Fitness", "Discipline", "Critical Thinking"]
+    };
+
+    const extraSkills = [
+        "Python", "Programming", "Problem Solving", "Debugging", "SQL", "Power BI", "Statistics", "Data Analysis",
+        "HTML", "CSS", "JavaScript", "Flask", "Git", "Networking", "Linux", "Ethical Hacking", "Cybersecurity",
+        "Communication", "Leadership", "Creativity", "Accounting", "Biology", "Chemistry", "Patient Care", "Diagnosis",
+        "Physics", "Teaching", "Research", "Public Speaking", "Critical Thinking", "Analytical Thinking",
+        "Laboratory Skills", "Excel", "Marketing", "Mathematics"
+    ].concat({{ all_skills|tojson }});
+
+    function selectedSkills() {
+        return Array.from(form.querySelectorAll('input[name="skills"]:checked')).map(input => input.value);
+    }
+
+    const MAX_SKILLS = {{ max_skills }};
+    const EXTRA_PREVIEW = 8;
+    const skillSearch = document.getElementById("skill-search");
+    const showMoreButton = document.getElementById("show-more-skills");
+    const limitMessage = document.getElementById("skill-limit-msg");
+    let showAllExtra = false;
+
+    const levelsBox = document.getElementById("skill-levels");
+    const levelsList = document.getElementById("skill-levels-list");
+    const LEVELS = ["Beginner", "Basic", "Intermediate", "Advanced", "Expert"];
+    const chosenLevels = {};
+
+    function renderSkillLevels() {
+        const chosen = selectedSkills();
+        levelsBox.hidden = chosen.length === 0;
+        levelsList.replaceChildren();
+        chosen.forEach(function (skill) {
+            const row = document.createElement("div");
+            row.className = "level-row";
+            const name = document.createElement("span");
+            name.textContent = skill;
+            const select = document.createElement("select");
+            select.name = "level::" + skill;
+            select.setAttribute("aria-label", "Your level in " + skill);
+            LEVELS.forEach(function (label, index) {
+                const option = new Option((index + 1) + " · " + label, String(index + 1));
+                select.add(option);
+            });
+            select.value = chosenLevels[skill] || "3";
+            select.addEventListener("change", function () { chosenLevels[skill] = select.value; });
+            row.append(name, select);
+            levelsList.appendChild(row);
+        });
+    }
+
+    function updateQuizCount() {
+        const total = {{ questions|length }};
+        const answered = new Set(Array.from(form.querySelectorAll('.quiz input:checked')).map(i => i.name)).size;
+        document.getElementById("quiz-count").textContent = answered + " / " + total + " answered";
+        document.getElementById("quiz-count").classList.toggle("done", answered === total);
+    }
+    form.querySelectorAll(".quiz input").forEach(function (input) {
+        input.addEventListener("change", updateQuizCount);
+    });
+
+    function updateSkillCount() {
+        const count = selectedSkills().length;
+        const full = count >= MAX_SKILLS;
+        counter.textContent = count + " / " + MAX_SKILLS + " selected";
+        renderSkillLevels();
+        counter.classList.toggle("full", full);
+        limitMessage.hidden = !full;
+        form.querySelectorAll('input[name="skills"]').forEach(function (box) {
+            box.disabled = full && !box.checked;
+            box.closest(".skill-option").classList.toggle("locked", box.disabled);
+        });
+    }
+
+    function filterExtraSkills() {
+        const query = skillSearch.value.trim().toLowerCase();
+        const options = Array.from(extraGrid.querySelectorAll(".skill-option"));
+        let shown = 0;
+        options.forEach(function (option) {
+            const box = option.querySelector("input");
+            const matches = option.textContent.toLowerCase().includes(query);
+            const visible = matches && (query || showAllExtra || box.checked || shown < EXTRA_PREVIEW);
+            option.hidden = !visible;
+            if (visible && !box.checked) shown += 1;
+        });
+        const hiddenCount = options.filter(o => o.hidden && o.textContent.toLowerCase().includes(query)).length;
+        showMoreButton.hidden = Boolean(query) || (hiddenCount === 0 && !showAllExtra);
+        showMoreButton.textContent = showAllExtra ? "Show fewer skills" : "Show all skills (" + (options.length) + ")";
+    }
+
+    function makeSkillOption(skill, checkedValues) {
+        const label = document.createElement("label");
+        label.className = "skill-option";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "skills";
+        checkbox.value = skill;
+        checkbox.checked = checkedValues.has(skill);
+        checkbox.addEventListener("change", function () {
+            if (checkbox.checked && selectedSkills().length > MAX_SKILLS) {
+                checkbox.checked = false;
+            }
+            updateSkillCount();
+        });
+        const text = document.createElement("span");
+        text.textContent = skill;
+        label.append(checkbox, text);
+        return label;
+    }
+
+    function renderSkills() {
+        const checkedValues = new Set(selectedSkills());
+        const suggested = skillsByInterest[interest.value] || [];
+        const suggestedSet = new Set(suggested);
+        const allSkills = [...new Set([...extraSkills, ...Object.values(skillsByInterest).flat()])];
+        const additional = allSkills.filter(skill => !suggestedSet.has(skill));
+
+        suggestedGrid.replaceChildren();
+        extraGrid.replaceChildren();
+        suggested.forEach(skill => suggestedGrid.appendChild(makeSkillOption(skill, checkedValues)));
+        additional.forEach(skill => extraGrid.appendChild(makeSkillOption(skill, checkedValues)));
+        updateSkillCount();
+        filterExtraSkills();
+    }
+
+    function updateScoreHint() {
+        if (scoreType.value === "cgpa") {
+            marks.max = "4";
+            marks.placeholder = "e.g. 3.40";
+            scoreHint.textContent = "Enter a CGPA from 0 to 4.";
+        } else {
+            marks.max = "100";
+            marks.placeholder = "e.g. 85";
+            scoreHint.textContent = "Enter a percentage from 0 to 100.";
+        }
+        marks.value = "";
+    }
+
+    const FIELDS_BY_LEVEL = {{ fields_by_level|tojson }};
+    const educationSelect = document.getElementById("education");
+    const fieldSelect = document.getElementById("field");
+    const lpBody = document.getElementById("lp-body");
+    const lpStatus = document.getElementById("lp-status");
+    let previewTimer = null;
+    let previewController = null;
+
+    function setGroup(group, show) {
+        group.hidden = !show;
+        group.querySelectorAll("input, select").forEach(control => {
+            control.disabled = !show;
+            control.required = show;
+        });
+    }
+
+    function updateLevel() {
+        const level = educationSelect.value;
+        fieldSelect.replaceChildren(new Option(level ? "Select your field of study" : "Select education level first", ""));
+        (FIELDS_BY_LEVEL[level] || []).forEach(([value, label]) => fieldSelect.add(new Option(label, value)));
+        fieldSelect.disabled = !level;
+        setGroup(document.getElementById("inter-group"), ["Intermediate", "A Level", "BS", "MS"].includes(level));
+        document.querySelectorAll(".degree-only").forEach(group => setGroup(group, ["BS", "MS"].includes(level)));
+        schedulePreview();
+    }
+
+    function node(tag, className, text) {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        if (text !== undefined) element.textContent = text;
+        return element;
+    }
+
+    function renderPreview(data) {
+        lpBody.replaceChildren();
+        if (!data.ok) {
+            lpBody.appendChild(node("p", "lp-hint" + (data.warn ? " warn" : ""), data.message));
+            lpStatus.textContent = data.warn ? "Please check your input" : "Waiting for your details";
+            return;
+        }
+        lpStatus.textContent = "Live";
+        lpBody.appendChild(node("p", "lp-overall", data.overall));
+        if (data.personality) {
+            lpBody.appendChild(node("p", "lp-personality", "Personality type: " +
+                data.personality.map(p => p.name + " (" + p.code + ")").join(", ")));
+        } else {
+            lpBody.appendChild(node("p", "lp-hint", "Answer the personality quiz below to add your personality match."));
+        }
+        const found = data.nlp || {};
+        if ((found.interests || []).length || (found.skills || []).length) {
+            const box = node("div", "lp-nlp");
+            box.appendChild(node("strong", "", "Detected from your description"));
+            if (found.interests.length) box.appendChild(node("p", "", "Interests: " + found.interests.join(", ")));
+            if (found.skills.length) box.appendChild(node("p", "", "Skills: " + found.skills.join(", ")));
+            if (found.suggestion) box.appendChild(node("p", "lp-hint warn", found.suggestion));
+            lpBody.appendChild(box);
+        }
+        data.careers.forEach(career => {
+            const row = node("div", "lp-row");
+            const top = node("div", "top");
+            top.append(node("span", "", career.name), node("span", "", Math.round(career.score) + "% · " + career.label));
+            const bar = node("div", "lp-bar");
+            const fill = document.createElement("i");
+            fill.style.width = Math.min(career.score, 100) + "%";
+            bar.appendChild(fill);
+            row.append(top, bar);
+            lpBody.appendChild(row);
+        });
+        if (data.pathway.length) {
+            lpBody.appendChild(node("p", "lp-hint warn", "No career is open at your current education level yet. Next steps:"));
+            data.pathway.forEach(item => lpBody.appendChild(node("p", "lp-path", item.name + " needs " + item.requires)));
+        }
+    }
+
+    function schedulePreview() {
+        clearTimeout(previewTimer);
+        previewTimer = setTimeout(runPreview, 350);
+    }
+
+    async function runPreview() {
+        if (previewController) previewController.abort();
+        previewController = new AbortController();
+        lpStatus.textContent = "Updating...";
+        try {
+            const response = await fetch("/api/preview", {
+                method: "POST", body: new FormData(form), signal: previewController.signal
+            });
+            renderPreview(await response.json());
+        } catch (error) {
+            if (error.name !== "AbortError") lpStatus.textContent = "Preview unavailable";
+        }
+    }
+
+    educationSelect.addEventListener("change", updateLevel);
+    form.addEventListener("input", function (event) { if (event.target.id !== "skill-search") schedulePreview(); });
+    form.addEventListener("change", schedulePreview);
+    updateLevel();
+    skillSearch.addEventListener("input", filterExtraSkills);
+    skillSearch.addEventListener("keydown", function (event) { if (event.key === "Enter") event.preventDefault(); });
+    showMoreButton.addEventListener("click", function () { showAllExtra = !showAllExtra; filterExtraSkills(); });
+    interest.addEventListener("change", renderSkills);
+    scoreType.addEventListener("change", updateScoreHint);
+    renderSkills();
+    updateScoreHint();
+
+    // Pre-fill from the latest assessment so a returning student only
+    // updates what has changed (SRS FR3).
+    const previous = {{ previous|tojson }};
+    if (previous && previous.education) {
+        const setValue = function (id, value) {
+            const el = document.getElementById(id);
+            if (el && value !== null && value !== undefined && value !== "") el.value = value;
+        };
+        educationSelect.value = previous.education;
+        updateLevel();
+        setValue("field", previous.field);
+        setValue("matric_percentage", previous.matric);
+        setValue("inter_percentage", previous.inter);
+        if (previous.score_type) {
+            scoreType.value = previous.score_type;
+            updateScoreHint();
+            setValue("marks", previous.marks || (previous.score_type === "cgpa" ? previous.cgpa : ""));
+        } else if (previous.cgpa) {
+            scoreType.value = "cgpa";
+            updateScoreHint();
+            setValue("marks", previous.cgpa);
+        }
+        setValue("interest", previous.interest);
+        setValue("interest_description", previous.about);
+        renderSkills();
+        const wanted = new Set(previous.skills || []);
+        form.querySelectorAll('input[name="skills"]').forEach(function (box) {
+            if (wanted.has(box.value) && selectedSkills().length < MAX_SKILLS) box.checked = true;
+        });
+        Object.entries(previous.levels || {}).forEach(function ([skill, level]) { chosenLevels[skill] = String(level); });
+        updateSkillCount();
+        filterExtraSkills();
+        Object.entries(previous.answers || {}).forEach(function ([key, value]) {
+            const radio = Array.from(form.querySelectorAll('input[name="' + key + '"]')).find(r => r.value === String(value));
+            if (radio) radio.checked = true;
+        });
+        updateQuizCount();
+        const note = document.getElementById("prefill-note");
+        if (note) note.hidden = false;
+        schedulePreview();
+    }
+
+    form.addEventListener("submit", function (event) {
+        if (selectedSkills().length === 0) {
+            event.preventDefault();
+            alert("Please select at least one skill.");
+            return;
+        }
+        const unanswered = {{ questions|length }} - new Set(Array.from(form.querySelectorAll('.quiz input:checked')).map(i => i.name)).size;
+        if (unanswered > 0) {
+            event.preventDefault();
+            alert("Please answer all personality questions (" + unanswered + " left).");
+            const first = Array.from(form.querySelectorAll(".quiz-row")).find(r => !r.querySelector("input:checked"));
+            if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
+        if (selectedSkills().length > MAX_SKILLS) {
+            event.preventDefault();
+            alert("Please choose at most " + MAX_SKILLS + " skills.");
+            return;
+        }
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            form.reportValidity();
+            return;
+        }
+        overlay.classList.add("visible");
+        overlay.setAttribute("aria-hidden", "false");
+        submitButton.disabled = true;
+    });
+});
+</script>
+{% endblock %}

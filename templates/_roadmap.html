@@ -1,0 +1,30 @@
+{# Reusable roadmap timeline. Usage: {% from "_roadmap.html" import roadmap %} {{ roadmap(career.roadmap) }} #}
+{% macro roadmap(rm) %}
+{% if rm %}
+<div class="roadmap">
+    <p class="rm-summary">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        {{ rm.summary }}
+    </p>
+    <ol class="rm-steps">
+        {% for s in rm.steps %}
+        <li class="rm-step rm-{{ s.kind }}{{ ' done' if s.done }}{{ ' current' if s.current }}">
+            <span class="rm-dot" aria-hidden="true">
+                {% if s.done %}<svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10"/></svg>{% else %}{{ loop.index0 }}{% endif %}
+            </span>
+            <div class="rm-body">
+                <div class="rm-title">
+                    <span>{{ s.title }}</span>
+                    {% if s.years %}<span class="rm-years">{{ s.years }} year{{ 's' if s.years != 1 }}</span>{% endif %}
+                    {% if s.current %}<span class="rm-now">Your next step</span>{% endif %}
+                </div>
+                <p>{{ s.detail }}</p>
+                {% if s.warn %}<p class="rm-warn">{{ s.warn }}</p>{% endif %}
+            </div>
+        </li>
+        {% endfor %}
+    </ol>
+    <p class="rm-note">Admission rules, minimum marks and age limits change from year to year. Confirm them with the university or the official body before applying.</p>
+</div>
+{% endif %}
+{% endmacro %}

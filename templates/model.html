@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block t %}AI Model{% endblock %}
+{% block body %}
+<main class="page-wrap">
+  <div class="panel">
+    <span class="tag">How the AI works</span>
+    <h2>Hybrid recommendation engine</h2>
+    <p>Every recommendation combines three techniques:</p>
+    <div class="method-grid">
+      <div class="method"><strong>1. Knowledge-based scoring</strong><p>Matches your field, interest, education, academic results and skills against each career's requirements. Careers you are not yet eligible for become a next-step pathway.</p></div>
+      <div class="method"><strong>2. Natural language processing</strong><p>Your own description is tokenised, stemmed and compared with every career using TF-IDF and cosine similarity. Interests and skills mentioned in the text are detected automatically.</p></div>
+      <div class="method"><strong>3. Machine learning</strong><p>A classifier trained on labelled student profiles predicts the most likely careers for your profile. Its prediction contributes 20% of the final score.</p></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <span class="tag">Model evaluation</span>
+    {% if metrics %}
+    <h2>Comparison of four classifiers</h2>
+    <p class="muted">Stratified {{ metrics.folds }}-fold cross-validation on {{ "{:,}".format(metrics.dataset_size) }} student profiles, {{ metrics.classes }} careers, {{ metrics.features }} features. Precision, recall and F1 are macro-averaged.</p>
+    <table class="table metrics-table">
+      <tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1 score</th></tr>
+      {% for r in metrics.results %}
+      <tr class="{{ 'best' if r.model == metrics.selected_model }}">
+        <td><strong>{{ r.model }}</strong>{% if r.model == metrics.selected_model %} <span class="tag small">Selected</span>{% endif %}</td>
+        <td><div class="metric-bar"><i style="width: {{ r.accuracy }}%"></i></div>{{ r.accuracy }}% <small class="muted">± {{ r.accuracy_std }}</small></td>
+        <td>{{ "%.3f"|format(r.precision) }}</td>
+        <td>{{ "%.3f"|format(r.recall) }}</td>
+        <td>{{ "%.3f"|format(r.f1) }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    <p class="note"><strong>About the data:</strong> {{ metrics.dataset_type }}. Each profile is created from a career's real requirements with random variation (different fields, interests, marks and skill subsets), because no public dataset of Pakistani student career outcomes is available. These scores show how well each model learns that profile-to-career mapping; they are not a measure of real-world outcomes, which the feedback below begins to collect.</p>
+    {% else %}
+    <h2>Evaluation not generated yet</h2>
+    <p>Run <code>python train_model.py</code> in the project folder to generate the dataset and model comparison.</p>
+    {% endif %}
+    {% if not sklearn_ok %}<p class="flash error">scikit-learn is not installed, so the ML component is switched off. Run <code>pip install -r requirements.txt</code>.</p>{% endif %}
+  </div>
+
+  <div class="panel">
+    <span class="tag">Real-world feedback</span>
+    <h2>User evaluation</h2>
+    <div class="stat-row">
+      <div class="stat"><strong>{{ assessments }}</strong><span>Assessments completed</span></div>
+      <div class="stat"><strong>{{ feedback_total }}</strong><span>Feedback responses</span></div>
+      <div class="stat"><strong>{{ (satisfaction ~ '%') if satisfaction is not none else '—' }}</strong><span>Found it helpful</span></div>
+    </div>
+  </div>
+</main>
+{% endblock %}

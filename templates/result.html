@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% from "_roadmap.html" import roadmap %}
+{% block t %}Your career report{% endblock %}
+{% block body_class %}report-page{% endblock %}
+
+{% macro icon(name) -%}
+<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">
+{%- if name == 'wallet' -%}<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h2M3 10h18"/>
+{%- elif name == 'trend' -%}<path d="m4 16 5-5 4 4 7-7"/><path d="M15 8h5v5"/>
+{%- elif name == 'book' -%}<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5Z"/><path d="M8 7h7"/>
+{%- elif name == 'cap' -%}<path d="M12 4 2 9l10 5 10-5-10-5Z"/><path d="M6 11.5V16c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5v-4.5"/>
+{%- elif name == 'brief' -%}<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+{%- elif name == 'play' -%}<circle cx="12" cy="12" r="9"/><path d="m10 8.5 5 3.5-5 3.5Z"/>
+{%- elif name == 'check' -%}<path d="m5 12 4 4 10-10"/>
+{%- elif name == 'ext' -%}<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>
+{%- endif -%}
+</svg>
+{%- endmacro %}
+
+{% block body %}
+<main class="rp">
+
+    <!-- ================= HEADER ================= -->
+    <section class="rp-hero">
+        <div class="rp-wrap rp-hero-grid">
+            <div>
+                <span class="eyebrow-dark">Career report · {{ generated_on }}</span>
+                <h1>{{ name }}, here are your best-fit careers</h1>
+                <p class="rp-sub">
+                    {{ education }} · {{ field }} · interest in {{ interest }} ·
+                    {{ skills|length }} skill{{ 's' if skills|length != 1 }} selected
+                </p>
+                <p class="rp-scoreline">{{ academic_score_display }}</p>
+            </div>
+            <div class="rp-actions no-print">
+                <button type="button" class="btn btn-light btn-3d" onclick="window.print()">Download PDF report</button>
+                <a class="btn btn-ghost" href="{{ url_for('home') }}#assessment">New assessment</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="rp-wrap rp-body">
+
+        {% set top = careers[0] %}
+
+        <!-- ================= TOP MATCH ================= -->
+        <section class="top-match depth-card">
+            <div class="tm-main">
+                <span class="eyebrow">Best match</span>
+                <h2>{{ top.career_name }}</h2>
+                <p>{{ top.description }}</p>
+                <div class="tm-facts">
+                    <div>{{ icon('wallet') }}<span>Average salary</span><strong>{{ top.average_salary }}</strong></div>
+                    <div>{{ icon('trend') }}<span>Future scope</span><strong>{{ top.future_scope }}</strong></div>
+                    <div>{{ icon('cap') }}<span>Education</span><strong>{{ top.required_education or education }} required · you qualify</strong></div>
+                </div>
+                <div class="tm-links no-print">
+                    {% if top.career_id %}<a class="link-btn" href="{{ url_for('career_details', career_id=top.career_id) }}">View career details</a>{% endif %}
+                    {% for label, url in top.links.jobs %}
+                    <a class="link-btn primary" href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ icon('brief') }}Jobs on {{ label }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="tm-score">
+                <div class="ring" style="--p: {{ top.score|round|int }}">
+                    <span><b>{{ top.score|round|int }}%</b>match</span>
+                </div>
+                <strong>{{ top.suitability_label }}</strong>
+            </div>
+        </section>
+
+        {% if personality_profile %}
+        <!-- ================= PERSONALITY PROFILE ================= -->
+        <section class="rm-section personality-card">
+            <div>
+                <h2>Your personality type: {{ personality_profile[:2]|map(attribute='name')|join(' and ') }}</h2>
+                <p class="muted">From your answers to the 15-question Holland (RIASEC) quiz. Careers are compared with this profile using cosine similarity.</p>
+                <ul class="type-list">
+                    {% for t in personality_profile[:2] %}<li><b>{{ t.name }} ({{ t.code }})</b> {{ t.about }}</li>{% endfor %}
+                </ul>
+            </div>
+            <div class="riasec-bars">
+                {% for letter in ['R','I','A','S','E','C'] %}
+                    {% for t in personality_profile if t.code == letter %}
+                    <div class="riasec-row"><span>{{ t.name }}</span><div class="rc-bar small"><i style="width: {{ t.score }}%"></i></div><b>{{ t.score }}</b></div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- ================= ROADMAP FOR THE BEST MATCH ================= -->
+        <section class="rm-section">
+            <h2>Your roadmap to {{ top.career_name }}</h2>
+            {{ roadmap(top.roadmap) }}
+        </section>
+
+        <!-- ================= RANKED LIST ================= -->
+        <div class="rp-section-head">
+            <h2>All recommended careers</h2>
+            <p>Ranked by how well each career fits your education, results, interests, skills and description.</p>
+        </div>
+
+        {% for career in careers %}
+        <article class="rc" id="career-{{ loop.index }}">
+            <header class="rc-head">
+                <span class="rc-rank">{{ loop.index }}</span>
+                <div class="rc-title">
+                    <h3>{{ career.career_name }}</h3>
+                    <p>{{ career.description }}</p>
+                    {% if career.personality_match is not none and career.personality_match is defined %}
+                    <span class="pm-tag">Personality match {{ career.personality_match|round|int }}% · {{ career.holland_names|join(', ') }}</span>
+                    {% endif %}
+                </div>
+                <div class="rc-score">
+                    <b>{{ career.score|round|int }}%</b>
+                    <span class="fit fit-{{ career.suitability_label|lower|replace(' ', '-') }}">{{ career.suitability_label }}</span>
+                </div>
+            </header>
+            <div class="rc-bar"><i style="width: {{ career.score|round|int }}%"></i></div>
+
+            <div class="rc-grid">
+                <div class="rc-block">
+                    <h4>Why this career</h4>
+                    <ul class="why">
+                        {% for reason in (career.reasons or [])|unique %}
+                            {% if loop.index <= 5 %}<li>{{ icon('check') }}<span>{{ reason }}</span></li>{% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="rc-block">
+                    <h4>Your skills</h4>
+                    {% if career.skill_match is defined %}
+                    <div class="skill-meter"><div class="skill-meter-top"><span>Skill match</span><b>{{ career.skill_match }}%</b></div>
+                        <div class="rc-bar small"><i style="width: {{ career.skill_match }}%"></i></div></div>
+                    {% endif %}
+                    <div class="chip-row">
+                        {% if career.skills_levels is defined %}
+                            {% for s in career.skills_levels %}<span class="chip chip-have" title="{{ s.label }}">{{ s.name }} · {{ s.level }}/5</span>{% endfor %}
+                            {% for s in career.skills_developing %}<span class="chip chip-developing" title="{{ s.label }}">{{ s.name }} · {{ s.level }}/5</span>{% endfor %}
+                        {% else %}
+                            {% for s in career.skills_have %}<span class="chip chip-have">{{ s }}</span>{% endfor %}
+                        {% endif %}
+                        {% for s in career.skills_missing %}<span class="chip chip-missing">{{ s }}</span>{% endfor %}
+                    </div>
+                    <p class="legend"><i class="dot have"></i>You have <i class="dot developing"></i>Still developing <i class="dot missing"></i>To learn</p>
+                </div>
+            </div>
+
+            {% if not loop.first and career.roadmap %}
+            <details class="rc-roadmap">
+                <summary>View roadmap · {{ career.roadmap.summary }}</summary>
+                {{ roadmap(career.roadmap) }}
+            </details>
+            {% endif %}
+
+            <div class="rc-facts">
+                <div>{{ icon('wallet') }}<span>Salary</span><strong>{{ career.average_salary }}</strong></div>
+                <div>{{ icon('trend') }}<span>Future scope</span><strong>{{ career.future_scope }}</strong></div>
+                <div>{{ icon('book') }}<span>Learn with</span><strong>{{ career.learning_resources }}</strong></div>
+            </div>
+
+            {% set market = career.get("job_market", {}) %}
+            {% if market.get("available") and market.get("jobs") %}
+            <div class="rc-market">
+                <h4>Live openings · {{ market.get("country", "") }}</h4>
+                {% for job in market.get("jobs", [])[:3] %}
+                <a class="job-row" href="{{ job.get('url') }}" target="_blank" rel="noopener noreferrer">
+                    <strong>{{ job.get("title", "Job opening") }}</strong>
+                    <span>{{ job.get("company", "") }} · {{ job.get("location", "") }}</span>
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <footer class="rc-links no-print">
+                {% if career.career_id %}<a class="link-btn" href="{{ url_for('career_details', career_id=career.career_id) }}">View details</a>{% endif %}
+                <span class="sep">Find real jobs</span>
+                {% for label, url in career.links.jobs %}
+                <a class="link-btn" href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ label }}{{ icon('ext') }}</a>
+                {% endfor %}
+                <span class="sep">Start learning</span>
+                {% for label, url in career.links.learn %}
+                <a class="link-btn" href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ label }}{{ icon('ext') }}</a>
+                {% endfor %}
+            </footer>
+        </article>
+        {% endfor %}
+
+        <!-- ================= PROFILE + FEEDBACK ================= -->
+        <div class="rp-bottom">
+            <section class="panel-card">
+                <h3>Your profile</h3>
+                <dl class="facts-list">
+                    <div><dt>Name</dt><dd>{{ name }}</dd></div>
+                    <div><dt>Age</dt><dd>{{ age }}</dd></div>
+                    <div><dt>Gender</dt><dd>{{ gender }}</dd></div>
+                    <div><dt>Education</dt><dd>{{ education }}</dd></div>
+                    <div><dt>Field</dt><dd>{{ field }}</dd></div>
+                    <div><dt>Interest</dt><dd>{{ interest }}</dd></div>
+                    <div><dt>Results</dt><dd>{{ academic_score_display }}</dd></div>
+                    <div><dt>Skills</dt><dd>{{ skills|join(', ') }}</dd></div>
+                </dl>
+            </section>
+
+            {% if own_report is not defined or own_report %}
+            <section class="panel-card no-print" id="feedback-card">
+                <h3>Were these recommendations helpful?</h3>
+                <p class="muted">Your answer is saved and used to evaluate the system.</p>
+                <form id="feedback-form" class="feedback-form">
+                    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                    <input type="hidden" name="assessment_id" value="{{ assessment_id }}">
+                    <div class="feedback-choice">
+                        <label><input type="radio" name="helpful" value="1" required> Yes, helpful</label>
+                        <label><input type="radio" name="helpful" value="0"> Not really</label>
+                    </div>
+                    <textarea name="comment" rows="3" maxlength="500" placeholder="Optional: what could be better?"></textarea>
+                    <button type="submit" class="btn btn-dark">Send feedback</button>
+                    <p class="feedback-done" id="feedback-done" hidden>Thank you, your feedback has been saved.</p>
+                </form>
+            </section>
+            {% endif %}
+        </div>
+
+        <p class="rp-disclaimer">These recommendations are generated by an AI system from the information you entered. Use them as guidance and discuss important decisions with a teacher, parent or career counsellor.</p>
+    </div>
+</main>
+
+<script>
+window.addEventListener("beforeprint", function () {
+    document.querySelectorAll("details").forEach(function (d) { d.open = true; });
+});
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("feedback-form");
+    if (!form) return;
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const button = form.querySelector("button");
+        button.disabled = true;
+        try {
+            const response = await fetch("/feedback", { method: "POST", body: new FormData(form) });
+            const data = await response.json();
+            if (!data.ok) throw new Error(data.message);
+            form.querySelectorAll("input, textarea, button").forEach(el => el.disabled = true);
+            document.getElementById("feedback-done").hidden = false;
+        } catch (error) {
+            button.disabled = false;
+            alert("Could not save feedback. Please try again.");
+        }
+    });
+});
+</script>
+{% endblock %}

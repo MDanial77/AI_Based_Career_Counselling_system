@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body_class %}admin-page{% endblock %}
+{% block body %}
+<main class="admin">
+    <aside class="admin-side">
+        <div class="admin-badge">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6l-8-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+            <div><strong>Admin panel</strong><span>{{ account_name }}</span></div>
+        </div>
+        <a class="{{ 'on' if active == 'dashboard' }}" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a class="{{ 'on' if active == 'careers' }}" href="{{ url_for('admin_careers') }}">Careers</a>
+        <a class="{{ 'on' if active == 'users' }}" href="{{ url_for('admin_users') }}">Users</a>
+        <a class="{{ 'on' if active == 'feedback' }}" href="{{ url_for('admin_feedback') }}">Feedback</a>
+        <a href="{{ url_for('model_info') }}">AI model page</a>
+        <a class="side-exit" href="{{ url_for('home') }}">← Back to website</a>
+    </aside>
+    <section class="admin-main">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for c, m in messages %}<div class="flash {{ c }}" role="alert">{{ m }}</div>{% endfor %}
+        {% endwith %}
+        {% block admin %}{% endblock %}
+    </section>
+</main>
+{% endblock %}

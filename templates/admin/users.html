@@ -1,0 +1,44 @@
+{% extends "admin/layout.html" %}
+{% block t %}Users{% endblock %}
+{% block admin %}
+<div class="page-head"><div><h1>Users</h1><p class="muted">{{ users|length }} registered account{{ 's' if users|length != 1 }}.</p></div></div>
+{% if reset_link %}
+<div class="reset-banner" role="status">
+    <div>
+        <strong>Password reset link for {{ reset_link.name }}</strong>
+        <p>Send this link to the student. It works once and expires at {{ reset_link.expires }}. It will not be shown again.</p>
+        <div class="copy-row"><input id="reset-url" readonly value="{{ reset_link.url }}"><button type="button" class="btn btn-dark" id="copy-reset">Copy link</button></div>
+    </div>
+</div>
+<script>
+document.getElementById("copy-reset").addEventListener("click", function () {
+    const input = document.getElementById("reset-url"); input.select();
+    (navigator.clipboard ? navigator.clipboard.writeText(input.value) : Promise.reject()).then(
+        () => this.textContent = "Copied", () => { document.execCommand("copy"); this.textContent = "Copied"; });
+});
+</script>
+{% endif %}
+<section class="panel table-panel">
+    <table class="table">
+        <tr><th>Name</th><th>Email</th><th>Age</th><th>Joined</th><th>Assessments</th><th>Last activity</th><th class="right">Role</th></tr>
+        {% for u in users %}
+        <tr>
+            <td><strong>{{ u.full_name }}</strong></td><td>{{ u.email }}</td><td>{{ u.age or '—' }}</td><td>{{ u.joined }}</td><td>{{ u.assessments }}</td><td>{{ u.last }}</td>
+            <td class="right actions">
+                {% if u.is_admin %}<span class="tag small">Admin</span>{% else %}<span class="muted small">Student</span>{% endif %}
+                <form method="POST" action="{{ url_for('admin_reset_link', account_id=u.id) }}">
+                    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                    <button class="link-btn" type="submit" title="Create a one-time password reset link">Reset link</button>
+                </form>
+                {% if u.id != session.account_id %}
+                <form method="POST" action="{{ url_for('admin_toggle_role', account_id=u.id) }}">
+                    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+                    <button class="link-btn" type="submit">{{ "Remove admin" if u.is_admin else "Make admin" }}</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</section>
+{% endblock %}

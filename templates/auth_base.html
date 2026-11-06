@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block body_class %}auth-page{% endblock %}
+{% block body %}
+<main class="auth-split">
+    <aside class="auth-aside{{ ' admin-aside' if admin_mode }}">
+        <div class="auth-aside-inner">
+            {% block aside %}{% endblock %}
+        </div>
+    </aside>
+
+    <section class="auth-main">
+        <div class="auth-topbar">
+            <a class="auth-back" href="{{ request.referrer if request.referrer and request.host in request.referrer and request.path not in request.referrer else url_for('home') }}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Back
+            </a>
+            <a class="auth-close" href="{{ url_for('home') }}" aria-label="Close and return to the home page" title="Close">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+            </a>
+        </div>
+        <div class="auth-form-box">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for c, m in messages %}<div class="flash {{ c }}" role="alert">{{ m }}</div>{% endfor %}
+            {% endwith %}
+            {% block form %}{% endblock %}
+        </div>
+    </section>
+</main>
+<script>
+document.querySelectorAll(".pw-toggle").forEach(function (button) {
+    button.addEventListener("click", function () {
+        const input = document.getElementById(button.dataset.target);
+        const show = input.type === "password";
+        input.type = show ? "text" : "password";
+        button.textContent = show ? "Hide" : "Show";
+        button.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    });
+});
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") window.location.href = "{{ url_for('home') }}";
+});
+</script>
+{% endblock %}

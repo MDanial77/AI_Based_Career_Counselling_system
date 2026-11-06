@@ -1,0 +1,106 @@
+{% extends "auth_base.html" %}
+{% set signup = (mode == "signup") %}
+{% set admin_mode = (mode == "admin") %}
+{% block t %}{{ "Create account" if signup else ("Administrator sign-in" if admin_mode else "Sign in") }}{% endblock %}
+
+{% block aside %}
+    {% if admin_mode %}
+        <span class="eyebrow-dark">Staff only</span>
+        <h2>Administrator access</h2>
+        <p>Manage careers, review students' assessments and feedback, and retrain the AI model.</p>
+        <ul class="auth-points">
+            <li><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10"/></svg><span><b>Dashboard</b> Students, assessments and satisfaction at a glance</span></li>
+            <li><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10"/></svg><span><b>Career database</b> Add, edit and remove careers</span></li>
+            <li><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10"/></svg><span><b>Account support</b> Issue one-time password reset links</span></li>
+        </ul>
+        <div class="admin-lock" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.5"/></svg>
+        </div>
+    {% else %}
+        <span class="eyebrow-dark">{{ "Free for students" if signup else "Welcome back" }}</span>
+        <h2>{{ "Your career roadmap is five minutes away." if signup else "Pick up where you left off." }}</h2>
+        <p>{{ "Create an account once. Every assessment you take is saved so you can compare how your options change as your marks and skills grow." if signup else "Your past reports are saved in your account. Sign in to take a new assessment or review your history." }}</p>
+        {% include "_auth_points.html" %}
+        <div class="auth-sample tilt">
+            <div class="auth-sample-top"><span>Example match</span><b>95%</b></div>
+            <strong>Machine Learning Engineer</strong>
+            <div class="pv-bar"><i style="width:95%"></i></div>
+            <div class="pv-skills">
+                <span class="chip chip-have">Python</span>
+                <span class="chip chip-have">SQL</span>
+                <span class="chip chip-missing">TensorFlow</span>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block form %}
+    <h1>{{ "Create your account" if signup else ("Administrator sign-in" if admin_mode else "Sign in to your account") }}</h1>
+    <p class="sub">
+        {% if signup %}Already have an account? <a href="{{ url_for('login') }}">Sign in</a>
+        {% elif admin_mode %}Students should use the <a href="{{ url_for('login') }}">student sign-in</a>.
+        {% else %}New here? <a href="{{ url_for('signup') }}">Create a free account</a>{% endif %}
+    </p>
+
+    <form method="POST" autocomplete="on">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        {% if signup %}
+        <label for="full_name">Full name</label>
+        <input id="full_name" name="full_name" required minlength="2" placeholder="e.g. Muhammad Ali" value="{{ form.get('full_name', '') }}" autocomplete="name">
+
+        <div class="row2">
+            <div>
+                <label for="age">Age</label>
+                <input id="age" name="age" type="number" min="10" max="100" required placeholder="e.g. 17" value="{{ form.get('age', '') }}">
+            </div>
+            <div>
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="">Select</option>
+                    {% for g in ["Male", "Female"] %}<option {{ 'selected' if form.get('gender') == g }}>{{ g }}</option>{% endfor %}
+                </select>
+            </div>
+        </div>
+        {% endif %}
+
+        <label for="email">{{ "Admin email" if admin_mode else "Email address" }}</label>
+        <input id="email" name="email" type="email" required placeholder="you@example.com" value="{{ form.get('email', '') }}" autocomplete="email" autofocus>
+
+        <div class="label-row">
+            <label for="password">Password</label>
+            {% if not signup %}<a class="forgot-link" href="{{ url_for('forgot_password') }}">Forgot password?</a>{% endif %}
+        </div>
+        <div class="pw-field">
+            <input id="password" name="password" type="password" required {% if signup %}minlength="8" autocomplete="new-password"{% else %}autocomplete="current-password"{% endif %} placeholder="{{ 'At least 8 characters' if signup else 'Your password' }}">
+            <button type="button" class="pw-toggle" data-target="password" aria-label="Show password">Show</button>
+        </div>
+
+        {% if signup %}
+        <label for="confirm">Confirm password</label>
+        <div class="pw-field">
+            <input id="confirm" name="confirm" type="password" required minlength="8" autocomplete="new-password" placeholder="Type it again">
+            <button type="button" class="pw-toggle" data-target="confirm" aria-label="Show password">Show</button>
+        </div>
+
+        <fieldset class="recovery-box">
+            <legend>Password recovery</legend>
+            <p>If you forget your password, you can reset it by answering this question.</p>
+            <label for="security_question">Security question</label>
+            <select id="security_question" name="security_question" required>
+                <option value="">Choose a question</option>
+                {% for q in questions %}<option {{ 'selected' if form.get('security_question') == q }}>{{ q }}</option>{% endfor %}
+            </select>
+            <label for="security_answer">Your answer</label>
+            <input id="security_answer" name="security_answer" required minlength="2" placeholder="Not case-sensitive" autocomplete="off">
+        </fieldset>
+        {% endif %}
+
+        <button class="auth-btn btn-3d" type="submit">{{ "Create account" if signup else ("Sign in as administrator" if admin_mode else "Sign in") }}</button>
+    </form>
+
+    <p class="auth-fine">
+        {% if signup %}By creating an account you agree that your answers are stored to show your history and evaluate the system. <a href="{{ url_for('landing') }}#privacy">Privacy</a>
+        {% elif admin_mode %}Administrator accounts are created by the system owner with <code>create_admin.py</code>.
+        {% else %}Your password is stored as a secure hash and never shown to anyone.{% endif %}
+    </p>
+{% endblock %}

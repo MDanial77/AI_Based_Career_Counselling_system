@@ -1,0 +1,88 @@
+.auth-wrap{min-height:calc(100vh - 76px);display:grid;place-items:center;padding:40px 20px}
+.auth-card{width:min(440px,100%);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:36px 32px}
+.auth-card h1{margin:0 0 6px;font-size:1.6rem;color:var(--ink)}
+.auth-card p.sub{margin:0 0 22px;color:var(--muted)}
+.auth-card label{display:block;margin:14px 0 6px;font-weight:650;font-size:.88rem;color:var(--ink-soft)}
+.auth-card input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:11px;background:var(--surface-soft)}
+.auth-card input:focus{outline:2px solid var(--blue);background:#fff}
+.auth-btn{width:100%;margin-top:22px;min-height:46px;border:0;border-radius:11px;background:var(--navy);color:#fff;font-weight:750}
+.auth-btn:hover{background:var(--blue)}
+.auth-alt{margin-top:18px;text-align:center;color:var(--muted);font-size:.9rem}
+.auth-alt a{color:var(--blue);font-weight:650}
+.flash{padding:11px 14px;border-radius:11px;margin-bottom:12px;font-size:.9rem}
+.flash.error{background:#fdecec;color:#9b1c1c}.flash.info{background:var(--blue-soft);color:var(--blue-dark)}
+.page-wrap{width:min(900px,calc(100% - 40px));margin:40px auto}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:26px 28px;margin-bottom:18px}
+.panel h2{margin:0 0 8px}.panel .tag{display:inline-block;background:var(--blue-soft);color:var(--blue-dark);border-radius:99px;padding:3px 12px;font-size:.8rem;font-weight:700}
+.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line-soft)}
+.table th{color:var(--muted);font-size:.8rem;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:16px}.nav-links a.plain{font-weight:650;color:var(--ink-soft);font-size:.9rem}
+
+[hidden]{display:none!important}
+.auth-card select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:11px;background:var(--surface-soft)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.profile-strip{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;margin-bottom:20px;border:1px solid var(--line);border-radius:14px;background:var(--blue-soft)}
+.profile-strip span{display:block;color:var(--muted);font-size:.88rem}
+.profile-strip a{color:var(--blue);font-weight:700;font-size:.9rem}
+.live-preview{margin:26px 0 8px;padding:18px 20px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#fff,var(--surface-soft));box-shadow:var(--shadow-sm)}
+.lp-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.lp-head small{color:var(--muted);margin-left:auto}
+.lp-dot{width:10px;height:10px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 4px rgba(34,197,94,.18)}
+.lp-overall{margin:10px 0 4px;font-size:.85rem;color:var(--ink-soft)}
+.lp-empty,.lp-hint{margin:12px 0 0;color:var(--muted);font-size:.92rem}.lp-hint.warn{color:#b45309;font-weight:600}
+.lp-row{margin-top:12px}.lp-row .top{display:flex;justify-content:space-between;font-weight:650;font-size:.93rem}
+.lp-row .top span:last-child{color:var(--blue-dark)}
+.lp-bar{height:8px;border-radius:99px;background:var(--line-soft);margin-top:6px;overflow:hidden}
+.lp-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),#6aa0ff);transition:width .4s ease}
+.lp-path{margin-top:10px;font-size:.9rem;color:var(--ink-soft)}
+
+.lp-nlp{margin:12px 0 4px;padding:12px 14px;border-radius:12px;background:var(--blue-soft);font-size:.9rem;color:var(--blue-dark)}.lp-nlp p{margin:4px 0 0}
+
+/* ---------- AI model page ---------- */
+.muted{color:var(--muted)}
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.method{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--surface-soft)}
+.method p{margin:6px 0 0;color:var(--ink-soft);font-size:.9rem;line-height:1.55}
+.metrics-table td{vertical-align:middle}
+.metrics-table tr.best td{background:var(--blue-soft)}
+.metric-bar{height:6px;border-radius:99px;background:var(--line-soft);margin-bottom:6px;width:140px;overflow:hidden}
+.metric-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),#6aa0ff)}
+.tag.small{font-size:.7rem;padding:2px 8px;margin-left:6px}
+.note{margin-top:16px;padding:12px 14px;border-radius:12px;background:var(--surface-soft);color:var(--ink-soft);font-size:.88rem;line-height:1.6}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.stat{padding:18px;border:1px solid var(--line);border-radius:14px;text-align:center}
+.stat strong{display:block;font-size:1.8rem;color:var(--blue-dark)}
+.stat span{color:var(--muted);font-size:.85rem}
+
+/* ---------- results: skill gap, feedback, report ---------- */
+.skill-gap{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+.skill-gap-col{padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface-soft)}
+.skill-gap-col h4{margin:0 0 10px;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:5px 11px;border-radius:99px;font-size:.82rem;font-weight:650}
+.chip-have{background:#e7f6ec;color:#17643a;border:1px solid #bfe5cc}
+.chip-missing{background:#fff4e5;color:#8a4b08;border:1px solid #f6d7a8}
+.chip-empty{color:var(--muted);font-size:.85rem}
+.hero-report-actions{margin-top:22px}
+.report-btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:11px;border:0;background:#fff;color:var(--navy);font-weight:750;cursor:pointer}
+.feedback-card .report-btn{background:var(--navy);color:#fff}
+.feedback-card{display:grid;grid-template-columns:1fr 1.2fr;gap:24px;align-items:start;margin:30px 0;padding:26px 28px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow-sm)}
+.feedback-card h3{margin:6px 0}.feedback-card p{color:var(--muted);margin:0}
+.feedback-form{display:grid;gap:12px}
+.feedback-choice{display:flex;gap:18px;font-weight:650}
+.feedback-form textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font:inherit;resize:vertical}
+.feedback-done{color:#17643a!important;font-weight:650}
+.print-only{display:none}
+@media (max-width:760px){.method-grid,.stat-row,.skill-gap,.feedback-card{grid-template-columns:1fr}}
+
+/* ---------- printable PDF report ---------- */
+@media print{
+  .navbar,.no-print,.footer,.assessment-action,.feedback-card,.job-market-panel{display:none!important}
+  .print-only{display:block!important}
+  body{background:#fff!important}
+  .results-hero{background:#fff!important;color:#111!important;padding:10px 0!important}
+  .results-hero h1,.results-hero p,.results-hero strong{color:#111!important}
+  .results-badge{display:none!important}
+  .career-card,.profile-summary,.best-match-content{box-shadow:none!important;break-inside:avoid;page-break-inside:avoid}
+  .score-fill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .chip,.metric-bar i{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
